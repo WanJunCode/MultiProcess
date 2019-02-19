@@ -24,6 +24,8 @@ public:
     pid_t get_pid() const {
         return pid_;
     };
+    void listPid() const;
+    void killPid(pid_t pid);
 protected:
     MultiProcess();
     MultiProcess(MultiProcess &) = delete;

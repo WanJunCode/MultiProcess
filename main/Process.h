@@ -3,6 +3,7 @@
 
 #include <functional>
 
+// 进程类
 class Process {
     friend class MultiProcess;
 public:

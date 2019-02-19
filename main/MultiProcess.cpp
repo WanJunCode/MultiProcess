@@ -111,3 +111,21 @@ void MultiProcess::chkServerRunWpid() {
     sprintf(buf, "%ld", (long)getpid());
     write(fileFd, buf, strlen(buf) + 1);
 }
+
+void MultiProcess::listPid() const{
+    printf("===========[child pid]============\n");
+    for(auto iter=child_.begin();iter!=child_.end();++iter){
+        printf("[%d]\n",iter->first);
+    }
+}
+
+void MultiProcess::killPid(pid_t pid){
+    auto process = child_.at(pid);
+    if(process){
+        process->kill();
+        process->get_exit_status();
+        child_.erase(child_.find(pid));
+    }else{
+        printf("no process find by pid [%d]\n",pid);
+    }
+}
