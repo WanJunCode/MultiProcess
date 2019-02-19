@@ -88,4 +88,4 @@ ${OUTPUT}:$(OBJS)
 
 clean:
 	-rm -f core ${OBJS} ${OUTPUT}
-	-rm -f *.a *.o *.so*
+	-rm -f *.a *.o *.so* ../core

@@ -26,6 +26,10 @@ public:
     };
     void listPid() const;
     void killPid(pid_t pid);
+
+    inline int getSize() const {
+        return child_.size();
+    }
 protected:
     MultiProcess();
     MultiProcess(MultiProcess &) = delete;

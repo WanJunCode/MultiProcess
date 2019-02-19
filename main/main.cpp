@@ -30,19 +30,13 @@ void child_process(int num){
     printf("child process [%d] end\n",num);
 }
 
-int main(int argc,char** argv){
-    MultiProcess &mgr = MultiProcess::getInstance();
-    mgr.chkServerRunWpid();
-
-    for(int i=0;i<5;++i){
-        mgr.fork(child_process,i);
-    }
-
+void parentControl(MultiProcess &mgr){
     while(true){
         std::string cmd;
         std::cin>>cmd;
 
         if(std::string::npos != cmd.find("return")){
+            mgr.killChildren();
             printf("break\n");
             break;
         }else if(std::string::npos != cmd.find("check")){
@@ -55,12 +49,31 @@ int main(int argc,char** argv){
         }else if(std::string::npos != cmd.find("list")){
             mgr.listPid();
         }else if(std::string::npos != cmd.find("kill")){
-            mgr.listPid();
             int pid;
             std::cin>>pid;
             mgr.killPid(pid);
+        }else if(std::string::npos != cmd.find("add")){
+            mgr.fork(child_process,mgr.getSize());
         }
     }
+}
+
+int main(int argc,char* argv[]){
+    printf("argc = %d\n",argc);
+    if(argc<2){
+        printf("usage\n");
+        return -1;
+    }
+
+    MultiProcess &mgr = MultiProcess::getInstance();
+    mgr.chkServerRunWpid();
+
+    int size = atoi(argv[1]);
+    for(int i=0; i<size ;++i){
+        mgr.fork(child_process,i);
+    }
+
+    parentControl(mgr);
     
     printf("parent process end\n");
     return 0;
