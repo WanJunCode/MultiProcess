@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+
 Process::Process(std::function<void(int)> function, int index) noexcept
     : pid_(0)
     , func_(function)
@@ -23,6 +24,7 @@ void Process::run() {
     pid_t pid =fork();
     if (pid < 0) { //error in fork!
         fprintf(stderr, "fork error!\n");
+        // fprintf(stdout,"stdout printf test\n");
         printf("process[%d] fork error", getpid());
     } else if (pid == 0) { //child process
         printf("current child process<==%d==>\n", getpid());
@@ -32,6 +34,7 @@ void Process::run() {
         // 子进程执行完毕后 退出
         _exit(EXIT_SUCCESS);
     } else { //parent process
+        // 父进程打印信息
         printf("process[%d] fork child process[==%d==]\n", getpid(), pid);
         pid_ = pid;
     }

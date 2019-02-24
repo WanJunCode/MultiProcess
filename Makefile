@@ -17,12 +17,12 @@ module:
 	$(MAKE) -C $@
 
 # main: common module
-main:
+main: common
 	$(MAKE) -C $@
 
 clean:
 	# $(MAKE) -C module clean
-	# $(MAKE) -C common clean
+	$(MAKE) -C common clean
 	$(MAKE) -C main clean
 
 # install:

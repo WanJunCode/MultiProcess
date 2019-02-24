@@ -26,6 +26,7 @@ std::shared_ptr<Process> MultiProcess::fork(std::function<void(int)> function, i
         // 非父进程不可以使用 fork
         printf("process[%d] can't use this method [fork] parent[%d]", getpid(), pid_);
     } else {
+        // Process 构造函数中调用 run , 完成 fork() 调用
         std::shared_ptr<Process> proc(new Process(function, index));
         if (pid_ == getpid()) {
             child_.insert(std::pair<pid_t, std::shared_ptr<Process> >(proc->get_id(), proc));
