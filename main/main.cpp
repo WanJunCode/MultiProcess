@@ -110,30 +110,49 @@ int main1(int argc,char* argv[]){
 }
 
 
+#include <thread>
+using namespace NET;
 
+// 对应 libevent server 中 echo package 包格式 
 typedef struct message{
     uint8_t     identity;       // 0x7E
     uint16_t    length;
 }__attribute__((packed)) echo_message_t;
 
-using namespace NET;
-int main(int argc,char* argv[]){
+bool loop = false;
 
-    auto client = Connect(argv[1],atoi(argv[2]));
+void receive_loop(remote_client client, int bufferSize){
+    char buffer[bufferSize];
+    bzero(buffer,bufferSize);
+    while(loop){
+        // 阻塞式
+        auto length = recv(client.clientfd,buffer,bufferSize,0);
+        printf("receive :[%s]\n",buffer);
+        bzero(buffer,bufferSize);
+        if(strncmp(buffer,"byebye",strlen("byebye")))
+            break;
+    }
+}
+
+void client_to_server(char *argv[]){
+
+    auto client = Connect("127.0.0.1",atoi(argv[1]));
     if(client.clientfd){
         printf("连接成功\n");
     }else{
-        printf("连接失败\n");
+        printf("something wrong : 连接不成功\n");
+        return;
     }
 
-
-    // const  char message[] = "message from wanjun";
-    // write(client.clientfd,message,strlen(message));
-
+    std::thread receive(receive_loop, std::ref(client),60);
+    loop = true;
     while(true){
         std::string message;
         std::cin>>message;
         if(message.find("return")!=std::string::npos){
+            loop = false;
+            const char *will = "byebye";
+            send(client.clientfd,will,strlen(will),0);
             break;
         }else if(message.find("send")!= std::string::npos){
             std::string sendMessage;
@@ -145,15 +164,18 @@ int main(int argc,char* argv[]){
             continue;
         }
         std::string sendMessage;
-        printf("message length is [%d]\n",message.length());
-        printf("message length is [%d]\n",(uint16_t)message.length());
         echo_message_t header{ 0x7E, htons((uint16_t)message.length()) };
         sendMessage.append((char *)(&header),sizeof(header));
         sendMessage.append(message.data(),message.length());
         write(client.clientfd,sendMessage.data(),sendMessage.length());
-        printf("message send ok\n");
     }
+    receive.join();
 
     Close(client);
+    return;
+}
+
+int main(int argc,char* argv[]){
+    client_to_server(argv);
     return 0;
 }
