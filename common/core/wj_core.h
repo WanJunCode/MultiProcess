@@ -1,3 +1,5 @@
+#ifndef WJ_CORE_H
+#define WJ_CORE_H
 
 #define  WJ_OK          0
 #define  WJ_ERROR      -1
@@ -6,3 +8,5 @@
 #define  WJ_DONE       -4
 #define  WJ_DECLINED   -5
 #define  WJ_ABORT      -6
+
+#endif

@@ -8,10 +8,12 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <string.h>     // bzero
+#include <stdlib.h>
 
 #include "../common/net/net_tool.h"
 #include "MultiProcess.h"
 #include "shm_mutex.h"
+#include "../common/nginx/nginx_log.h"
 
 shm_mutex_t *process_mutex = (shm_mutex_t *)mmap(NULL, sizeof(shm_mutex_t), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANON, -1, 0);
 // shm_mutex_t process_mutex;
@@ -126,10 +128,11 @@ void receive_loop(remote_client client, int bufferSize){
     bzero(buffer,bufferSize);
     while(loop){
         // 阻塞式
+        printf("before receive\n");
         auto length = recv(client.clientfd,buffer,bufferSize,0);
-        printf("receive :[%s]\n",buffer);
+        printf("receive[%d] :[%s]\n",length ,buffer);
         bzero(buffer,bufferSize);
-        if(strncmp(buffer,"byebye",strlen("byebye")))
+        if(0 == strncmp(buffer,"return",strlen("return")))
             break;
     }
 }
@@ -151,7 +154,7 @@ void client_to_server(char *argv[]){
         std::cin>>message;
         if(message.find("return")!=std::string::npos){
             loop = false;
-            const char *will = "byebye";
+            const char *will = "return";
             send(client.clientfd,will,strlen(will),0);
             break;
         }else if(message.find("send")!= std::string::npos){
@@ -163,6 +166,8 @@ void client_to_server(char *argv[]){
             write(client.clientfd,sendMessage.data(),sendMessage.length());
             continue;
         }
+        srand(time(NULL));
+        printf("rand [%d]\n",rand());
         std::string sendMessage;
         echo_message_t header{ 0x7E, htons((uint16_t)message.length()) };
         sendMessage.append((char *)(&header),sizeof(header));
@@ -176,6 +181,13 @@ void client_to_server(char *argv[]){
 }
 
 int main(int argc,char* argv[]){
-    client_to_server(argv);
+    // client_to_server(argv);
+
+    u_char buffer[2048];
+    memset(buffer,0,sizeof(buffer));
+    const char *msg = "hello world";
+    // 将后续的 fmt 和 参数 合成字符串放入 buffer 字符数组中
+    ngx_snprintf(buffer, 2048, "nginx test [%d] [%s]",12, msg);
+    printf("[%s]\n",buffer);
     return 0;
 }

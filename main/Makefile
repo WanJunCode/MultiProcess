@@ -22,7 +22,7 @@ RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 
 LIBS := -L/usr/lib64/mysql/ -L../common/libs/ -L../module/libs/ \
 	-luuid -lmysqlpp -lmysqlclient -lpthread -levent -lmosquittopp -ljsoncpp -llog4cpp\
-   -lnet -lcore
+   -lnet -lcore -lnginx
 	# -lmqtt -lnetwork -ladaptee -lmapping -llogcpp -lsystem -lutils -lpackage -ldatabase
 
 
@@ -61,7 +61,8 @@ CXXFLAGS := ${CXXFLAGS} ${INCS}
 # Targets of the build
 #****************************************************************************
 
-OUTPUT := ../wj-service
+BIN := bin
+OUTPUT := ../$(BIN)/wj-service
 
 all: ${OUTPUT}
 

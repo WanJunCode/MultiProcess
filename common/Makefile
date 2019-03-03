@@ -63,8 +63,10 @@ all:
 	mkdir -p ${OUTPUT_LIBS}
 	$(MAKE) -C core
 	$(MAKE) -C net
+	$(MAKE) -C nginx
 
 clean:
 	rm -rf $(OUTPUT_INCLUDE) $(OUTPUT_LIBS)
 	$(MAKE) -C core clean
 	$(MAKE) -C net clean
+	$(MAKE) -C nginx clean

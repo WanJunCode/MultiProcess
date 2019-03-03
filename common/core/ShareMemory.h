@@ -3,13 +3,5 @@
 
 #include "wj_types.h"
 
-typedef struct {
-    u_char *addr;
-    
-
-} wj_shm_t; 
-
-
-
 
 #endif
