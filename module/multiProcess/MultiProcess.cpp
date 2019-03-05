@@ -1,5 +1,5 @@
 #include "MultiProcess.h"
-#include "version.h"
+#include "../../main/version.h"
 
 #include <unistd.h>
 #include <sys/stat.h>

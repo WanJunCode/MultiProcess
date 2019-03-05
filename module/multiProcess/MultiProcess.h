@@ -8,12 +8,12 @@
 class MultiProcess {
     typedef std::map< pid_t, std::shared_ptr<Process> > args_t;
 public:
-    ~MultiProcess();
     // 单例模式
     static MultiProcess& getInstance() {
         static MultiProcess instance;
         return instance;
     }
+    ~MultiProcess();
 
 public:
     virtual std::shared_ptr<Process> fork(std::function<void(int)> function, int index) noexcept;
@@ -21,22 +21,23 @@ public:
     void killChildren();
     void checkChildren();
     void chkServerRunWpid();
-    pid_t get_pid() const {
-        return pid_;
-    };
     void listPid() const;
     void killPid(pid_t pid);
 
     inline int getSize() const {
         return child_.size();
     }
-protected:
+    inline pid_t get_pid() const {
+        return pid_;
+    };
+
+private:
     MultiProcess();
     MultiProcess(MultiProcess &) = delete;
     MultiProcess & operator=(const MultiProcess &) = delete;
 private:
     pid_t pid_;
-    args_t child_;  // map
+    std::map< pid_t, std::shared_ptr<Process> > child_;  // map
 };
 
 #endif

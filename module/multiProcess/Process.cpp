@@ -35,7 +35,7 @@ void Process::run() {
         _exit(EXIT_SUCCESS);
     } else { //parent process
         // 父进程打印信息
-        printf("process[%d] fork child process[==%d==]\n", getpid(), pid);
+        // printf("process[%d] fork child process[==%d==]\n", getpid(), pid);
         pid_ = pid;
     }
 }

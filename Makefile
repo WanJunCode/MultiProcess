@@ -16,12 +16,11 @@ common:
 module:
 	$(MAKE) -C $@
 
-# main: common module
-main: common
+main: common module
 	$(MAKE) -C $@
 
 clean:
-	# $(MAKE) -C module clean
+	$(MAKE) -C module clean
 	$(MAKE) -C common clean
 	$(MAKE) -C main clean
 

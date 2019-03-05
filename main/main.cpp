@@ -10,10 +10,15 @@
 #include <string.h>     // bzero
 #include <stdlib.h>
 
-#include "../common/net/net_tool.h"
-#include "MultiProcess.h"
 #include "shm_mutex.h"
-#include "../common/nginx/nginx_log.h"
+
+#include "nginx/nginx_log.h"
+#include "nginx/nginx_log.h"
+#include "net/net_tool.h"
+#include "multiProcess/MultiProcess.h"
+
+#include <thread>
+using namespace NET;
 
 shm_mutex_t *process_mutex = (shm_mutex_t *)mmap(NULL, sizeof(shm_mutex_t), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANON, -1, 0);
 // shm_mutex_t process_mutex;
@@ -21,16 +26,16 @@ shm_mutex_t *process_mutex = (shm_mutex_t *)mmap(NULL, sizeof(shm_mutex_t), PROT
 int listenfd;
 
 void child_process(int num){
-    printf("child process [%d] begin\n",num);
+    printf("----------- child process [%d] begin -----------\n",num);
     if(ngx_shmtx_trylock(process_mutex)){
-        printf("pid [%d] get process mutex\n",getpid());
+        printf("pid [%d] get process mutex\n\n",getpid());
         sleep(2);
         ngx_shmtx_unlock(process_mutex);
     }else{
-        fprintf(stdout,"pid [%d] can't get process mutex\n",getpid());
+        // fprintf(stdout,"pid [%d] can't get process mutex\n",getpid());
     }
     sleep(180);
-    printf("child process [%d] end\n",num);
+    printf("----------- child process [%d] end -----------\n",num);
 }
 
 void parentControl(MultiProcess &mgr){
@@ -87,7 +92,7 @@ void mmap_test(){
     printf("parent process end\n");
 }
 
-int main1(int argc,char* argv[]){
+int main(int argc,char* argv[]){
 
     printf("argc = %d\n",argc);
     if(argc<2){
@@ -112,8 +117,6 @@ int main1(int argc,char* argv[]){
 }
 
 
-#include <thread>
-using namespace NET;
 
 // 对应 libevent server 中 echo package 包格式 
 typedef struct message{
@@ -180,7 +183,7 @@ void client_to_server(char *argv[]){
     return;
 }
 
-int main(int argc,char* argv[]){
+int main1(int argc,char* argv[]){
     // client_to_server(argv);
 
     u_char buffer[2048];
@@ -189,5 +192,6 @@ int main(int argc,char* argv[]){
     // 将后续的 fmt 和 参数 合成字符串放入 buffer 字符数组中
     ngx_snprintf(buffer, 2048, "nginx test [%d] [%s]",12, msg);
     printf("[%s]\n",buffer);
+
     return 0;
 }

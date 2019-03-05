@@ -20,11 +20,7 @@ DEBUG_CFLAGS     += -std=c++11 -ggdb -Wall -ffunction-sections -O0 -Wno-format \
 RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 -Wno-unknown-pragmas -Wno-format -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP
 
-LIBS := -L/usr/lib64/mysql/ -L../common/libs/ -L../module/libs/ \
-	-luuid -lmysqlpp -lmysqlclient -lpthread -levent -lmosquittopp -ljsoncpp -llog4cpp\
-   -lnet -lcore -lnginx -lmulti
-	# -lmqtt -lnetwork -ladaptee -lmapping -llogcpp -lsystem -lutils -lpackage -ldatabase
-
+LIBS		 :=
 
 DEBUG_CXXFLAGS   += ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS += ${RELEASE_CFLAGS}
@@ -47,7 +43,7 @@ endif
 #****************************************************************************
 
 #INCS := -I/usr/include/g++-2 -I/usr/local/include
-INCS := -I$(shell pwd)/../common/ -I$(shell pwd)/../module/
+INCS := -I./includes
 
 
 #****************************************************************************
@@ -57,37 +53,16 @@ INCS := -I$(shell pwd)/../common/ -I$(shell pwd)/../module/
 CFLAGS   := ${CFLAGS} ${INCS}
 CXXFLAGS := ${CXXFLAGS} ${INCS}
 
-#****************************************************************************
-# Targets of the build
-#****************************************************************************
+export CC CXX LD AR RANLIB CFLAGS CXXFLAGS LDFLAGS LIBS
 
-BIN := bin
-OUTPUT := ../$(BIN)/wj-service
+OUTPUT_LIBS    := ./libs
 
-all: ${OUTPUT}
+.PHONY:all clean
 
-#****************************************************************************
-# Source files
-#****************************************************************************
-#
-C_SRCS=$(shell find -iname "*.c")
-#
-CXX_SRCS=$(shell find -iname "*.cpp")
-
-OBJS=$(subst .c,.o,$(C_SRCS))
-OBJS+=$(subst .cpp,.o,$(CXX_SRCS))
-
-#****************************************************************************
-# Output
-#****************************************************************************
-
-${OUTPUT}:$(OBJS)
-	$(CXX) -o $@ -Wl,-gc-sections -Wl,--start-group $(OBJS) $(LDFLAGS) $(LIBS)
-
-#****************************************************************************
-# common rules
-#****************************************************************************
+all:
+	mkdir -p ${OUTPUT_LIBS}
+	$(MAKE) -C multiProcess
 
 clean:
-	-rm -f core ${OBJS} ${OUTPUT}
-	-rm -f *.a *.o *.so* ../core
+	rm -rf $(OUTPUT_INCLUDE) $(OUTPUT_LIBS)
+	$(MAKE) -C multiProcess clean
