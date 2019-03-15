@@ -28,7 +28,7 @@ int listenfd;
 void child_process(int num){
     printf("----------- child process [%d] begin -----------\n",num);
     if(ngx_shmtx_trylock(process_mutex)){
-        printf("pid [%d] get process mutex\n\n",getpid());
+        // printf("pid [%d] get process mutex\n\n",getpid());
         sleep(2);
         ngx_shmtx_unlock(process_mutex);
     }else{
@@ -92,7 +92,7 @@ void mmap_test(){
     printf("parent process end\n");
 }
 
-int main(int argc,char* argv[]){
+int main1(int argc,char* argv[]){
 
     printf("argc = %d\n",argc);
     if(argc<2){
@@ -150,7 +150,7 @@ void client_to_server(char *argv[]){
         return;
     }
 
-    std::thread receive(receive_loop, std::ref(client),60);
+    // std::thread receive(receive_loop, std::ref(client),60);
     loop = true;
     while(true){
         std::string message;
@@ -177,21 +177,71 @@ void client_to_server(char *argv[]){
         sendMessage.append(message.data(),message.length());
         write(client.clientfd,sendMessage.data(),sendMessage.length());
     }
-    receive.join();
+    // receive.join();
 
     Close(client);
     return;
 }
 
-int main1(int argc,char* argv[]){
-    // client_to_server(argv);
+void test_for_concurrence(size_t num,size_t port){
+    printf("num [%d] , port [%d]\n",num,port);
+    std::vector<remote_client> clientVec;
+    clientVec.reserve(num);
+    static size_t volume = 0;
 
-    u_char buffer[2048];
-    memset(buffer,0,sizeof(buffer));
-    const char *msg = "hello world";
-    // 将后续的 fmt 和 参数 合成字符串放入 buffer 字符数组中
-    ngx_snprintf(buffer, 2048, "nginx test [%d] [%s]",12, msg);
-    printf("[%s]\n",buffer);
+    int failConnection = 0;
+    for(size_t i=0;i<num;++i){
+        auto conn = Connect("127.0.0.1",port);
+        clientVec.push_back(conn);
+        if(conn.clientfd){
+            volume++;
+            if(volume > 100){
+                printf("当前连接数量 num = [%d]\n",i);
+                volume = 0;
+            }
+        }else{
+            ++failConnection;
+            printf("something wrong : 连接不成功\n");
+        }
+    }
+
+    printf("连接完成: 失败的连接数量为 [%d]\n",failConnection);
+    std::string cmd;
+    std::string msg = "message from client";
+    while(true){
+        std::cin>>cmd;
+        if(0 == strncmp(cmd.data(),"over",strlen("over"))){
+            printf("退出...\n");
+            break;
+        }
+        try{
+            size_t selectClient = atoi(cmd.data());
+            printf("select Cliet [%lu] clientVec.size() = [%lu]\n",selectClient,clientVec.size());
+            if(selectClient<clientVec.size()){
+                printf("send msg\n");
+                write(clientVec[selectClient].clientfd,msg.data(),msg.length());
+            }
+        }catch(...){
+            printf("atoi fail\n");
+        }
+    }
+
+    for(size_t i=0;i<clientVec.size();++i){
+        Close(clientVec[i]);
+    }
+    printf("test for concurrency end\n");
+}
+
+int main(int argc,char* argv[]){
+    // client_to_server(argv);
+    test_for_concurrence(atoi(argv[1]),12345);
+
+    // u_char buffer[2048];
+    // memset(buffer,0,sizeof(buffer));
+    // const char *msg = "hello world";
+    // // 将后续的 fmt 和 参数 合成字符串放入 buffer 字符数组中
+    // ngx_snprintf(buffer, 2048, "nginx test [%d] [%s]",12, msg);
+    // printf("[%s]\n",buffer);
 
     return 0;
 }

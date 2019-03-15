@@ -62,7 +62,7 @@ CXXFLAGS := ${CXXFLAGS} ${INCS}
 #****************************************************************************
 
 BIN := bin
-OUTPUT := ../$(BIN)/wj-service
+OUTPUT := ../$(BIN)/wj-client
 
 all: ${OUTPUT}
 
