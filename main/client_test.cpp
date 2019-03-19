@@ -31,6 +31,8 @@ void cleanup_method(void *args){
     printf("this is receive loop thread's cleanup mothed\n");
 }
 
+bool loop = false;
+
 void *async_receive_thread(void *args)
 {
     pthread_cleanup_push(cleanup_method,NULL);
@@ -42,6 +44,10 @@ void *async_receive_thread(void *args)
         // 阻塞式
         printf("before receive\n");
         auto length = recv(client->clientfd, buffer, bufferSize, 0);
+        if(length == 0){
+            loop = false;
+            return NULL;
+        }
         printf("receive[%lu] :[%s]\n", length, buffer);
         bzero(buffer, bufferSize);
     }
@@ -66,7 +72,8 @@ void client_to_server()
 
     pthread_t receiveThread;
     pthread_create(&receiveThread,NULL,async_receive_thread,&client);
-    while (true)
+    loop = true;
+    while (loop)
     {
         std::string message;
         std::cin >> message;
