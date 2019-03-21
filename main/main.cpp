@@ -23,13 +23,13 @@ extern void test_for_concurrence(const char *ip,  size_t port, size_t num);
 
 int main(int argc, char *argv[])
 {
-    // if(argc<=2){
-    //     printf("必须输入两个参数\n");
-    //     return 1;
-    // }
-    // test_for_concurrence(argv[1], atoi(argv[2]), 12345);
+    if(argc<=2){
+        printf("必须输入两个参数\n");
+        return -1;
+    }
+    test_for_concurrence(argv[1], 12345, atoi(argv[2]));
 
-    client_to_server();
+    // client_to_server();
 
     // u_char buffer[2048];
     // memset(buffer,0,sizeof(buffer));
