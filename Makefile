@@ -23,6 +23,7 @@ clean:
 	$(MAKE) -C module clean
 	$(MAKE) -C common clean
 	$(MAKE) -C main clean
+	rm -rf .vscode/ipch
 
 # install:
 # 	test -d ${INSTALL_DIR} || mkdir -p ${INSTALL_DIR} $(INSTALL_DIR)/bin/ $(INSTALL_DIR)/etc/ $(INSTALL_DIR)/lib/
