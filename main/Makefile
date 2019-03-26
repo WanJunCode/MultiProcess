@@ -11,7 +11,7 @@ DEBUG          ?= yes
 
 CC     ?= gcc
 CXX    ?= clang++
-LD     ?= g++
+LD     ?= clang++
 AR     ?= ar
 RANLIB ?= ranlib
 
@@ -22,9 +22,7 @@ RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 
 LIBS := -L/usr/lib64/mysql/ -L../common/libs/ -L../module/libs/ \
 	-luuid -lmysqlpp -lmysqlclient -lpthread -levent -lmosquittopp -ljsoncpp -llog4cpp\
-   -lnet -lcore -lnginx -lmulti
-	# -lmqtt -lnetwork -ladaptee -lmapping -llogcpp -lsystem -lutils -lpackage -ldatabase
-
+   -lnet -lcore -lnginx -lmulti -lbase
 
 DEBUG_CXXFLAGS   += ${DEBUG_CFLAGS} 
 RELEASE_CXXFLAGS += ${RELEASE_CFLAGS}

@@ -18,3 +18,6 @@ MultiProcess 使用方法
 6. listPid() 列出所有的子进程pid
 
 父进程对子进程的控制，使用信号和 pid 来激活。
+
+3.26日 改用 clang 进行编译
+根据 muduo 添加 base 库

@@ -10,8 +10,8 @@ DEBUG          ?= yes
 #****************************************************************************
 
 CC     ?= gcc
-CXX    ?= g++
-LD     ?= g++
+CXX    ?= clang++
+LD     ?= clang++
 AR     ?= ar
 RANLIB ?= ranlib
 
@@ -64,9 +64,11 @@ all:
 	$(MAKE) -C core
 	$(MAKE) -C net
 	$(MAKE) -C nginx
+	$(MAKE) -C base
 
 clean:
 	rm -rf $(OUTPUT_INCLUDE) $(OUTPUT_LIBS)
 	$(MAKE) -C core clean
 	$(MAKE) -C net clean
 	$(MAKE) -C nginx clean
+	$(MAKE) -C base clean

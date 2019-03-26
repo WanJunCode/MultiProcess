@@ -9,6 +9,9 @@ all: main
 INSTALL_DIR ?= ./package
 COMPILE_TIME = $(shell date +"%Y-%M-%d-%H:%M:%S")
 RELEASE_VISION = $(shell git show -s --pretty=format:%h)
+CXX = clang++
+
+export CXX
 
 common:
 	$(MAKE) -C $@
