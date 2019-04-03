@@ -1,3 +1,8 @@
+#include "shm_mutex.h"
+#include "../common/nginx/nginx_log.h"
+#include "../common/net/net_tool.h"
+#include "../common/base/BoundedBlockingQueue.h"
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -9,9 +14,6 @@
 #include <stdint.h>
 #include <string.h> // bzero
 #include <stdlib.h>
-#include "shm_mutex.h"
-#include "../common/nginx/nginx_log.h"
-#include "../common/net/net_tool.h"
 #include <thread>
 
 using namespace NET;
@@ -21,13 +23,22 @@ using namespace NET;
 extern void client_to_server();
 extern void test_for_concurrence(const char *ip,  size_t port, size_t num);
 
+void test_base_blockingqueue(){
+    using namespace WJ;
+    BoundedBlockingQueue<int> bbq(20);
+    bbq.put(12);
+    printf("take [%d]\n",bbq.take());
+}
+
 int main(int argc, char *argv[])
 {
-    if(argc<=2){
-        printf("必须输入两个参数\n");
-        return -1;
-    }
-    test_for_concurrence(argv[1], 12345, atoi(argv[2]));
+    test_base_blockingqueue();
+
+    // if(argc<=2){
+    //     printf("必须输入两个参数\n");
+    //     return -1;
+    // }
+    // test_for_concurrence(argv[1], 12345, atoi(argv[2]));
 
     // client_to_server();
 

@@ -80,7 +80,7 @@ OBJS+=$(subst .cpp,.o,$(CXX_SRCS))
 #****************************************************************************
 
 ${OUTPUT}:$(OBJS)
-	$(CXX) -o $@ -Wl,-gc-sections -Wl,--start-group $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -v -o $@ -Wl,-gc-sections -Wl,--start-group $(OBJS) $(LDFLAGS) $(LIBS)
 
 #****************************************************************************
 # common rules

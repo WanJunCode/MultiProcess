@@ -10,12 +10,12 @@ DEBUG          ?= yes
 #****************************************************************************
 
 CC     ?= gcc
-CXX    ?= clang++
+CXX	   = clang++
 LD     ?= clang++
 AR     ?= ar
 RANLIB ?= ranlib
 
-DEBUG_CFLAGS     += -std=c++11 -ggdb -Wall -ffunction-sections -O0 -Wno-format \
+DEBUG_CFLAGS     += -c -Wthread-safety -std=c++11 -ggdb -Wall -ffunction-sections -O0 -Wno-format \
 -DDEBUG -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP_FIX_ERROR_COLLISION -DLOG4CPP
 RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 -Wno-unknown-pragmas -Wno-format -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP
@@ -53,7 +53,9 @@ INCS := -I./includes
 CFLAGS   := ${CFLAGS} ${INCS}
 CXXFLAGS := ${CXXFLAGS} ${INCS}
 
+# export CC CXX LD AR RANLIB CFLAGS CXXFLAGS LDFLAGS LIBS
 export CC CXX LD AR RANLIB CFLAGS CXXFLAGS LDFLAGS LIBS
+
 
 OUTPUT_LIBS    := ./libs
 

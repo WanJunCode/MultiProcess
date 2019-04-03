@@ -1,15 +1,12 @@
 // check
 
-// Use of this source code is governed by a BSD-style license
-// that can be found in the License file.
-//
-// Author: Shuo Chen (chenshuo at chenshuo dot com)
-
 #include "CurrentThread.h"
 
 #include <cxxabi.h>
 #include <execinfo.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 namespace WJ
 {
@@ -23,9 +20,38 @@ __thread const char *t_threadName = "unknown";
 // 编译阶段判断 pid_t 能否使用 int 类型
 static_assert(std::is_same<int, pid_t>::value, "pid_t should be int");
 
+pid_t gettid()
+{
+  return static_cast<pid_t>(syscall(SYS_gettid));
+}
+
 // 栈痕迹
 // 将C++ ABI标识符(C++ ABI identifier)转换成C++源程序标识符
 // (original C++ source identifier)的过程称为demangle。
+// 缓存 线程id
+void cacheTid()
+{
+  if (t_cachedTid == 0)
+  {
+    t_cachedTid = gettid();
+    t_tidStringLength = snprintf(t_tidString, sizeof t_tidString, "%5d ", t_cachedTid);
+  }
+}
+
+bool isMainThread()
+{
+  return tid() == getpid();
+}
+
+// 1000000 表示 1 秒
+void sleepUsec(int64_t usec)
+{
+  struct timespec ts = {0, 0};
+  ts.tv_sec = static_cast<time_t>(usec / 1000000);
+  ts.tv_nsec = static_cast<long>(usec % 1000000 * 1000);
+  ::nanosleep(&ts, NULL);
+}
+
 string stackTrace(bool demangle)
 {
   string stack;
