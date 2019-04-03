@@ -1,5 +1,6 @@
 # MultiProcess
-Linux c++ multiprocess server framework
+Linux C++ 
+Multi-process server framework
 
 # C++ LINUX 平台下的一个多进程服务器实例
 
