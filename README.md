@@ -20,5 +20,5 @@ MultiProcess 使用方法
 
 父进程对子进程的控制，使用信号和 pid 来激活。
 
-3.26日 改用 clang 进行编译
+3.26日 改用 clang++ 基于 llvm 进行编译
 根据 WJ 添加 base 库
