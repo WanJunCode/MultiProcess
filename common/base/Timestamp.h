@@ -5,8 +5,8 @@
 //
 // Author: Shuo Chen (chenshuo at chenshuo dot com)
 
-#ifndef MUDUO_BASE_TIMESTAMP_H
-#define MUDUO_BASE_TIMESTAMP_H
+#ifndef WJ_BASE_TIMESTAMP_H
+#define WJ_BASE_TIMESTAMP_H
 
 #include "copyable.h"
 #include "Types.h"
@@ -128,4 +128,4 @@ inline Timestamp addTime(Timestamp timestamp, double seconds)
 
 }  // namespace WJ
 
-#endif  // MUDUO_BASE_TIMESTAMP_H
+#endif  // WJ_BASE_TIMESTAMP_H

@@ -1,3 +1,10 @@
+// check 压缩文件的读取
+
+// Use of this source code is governed by a BSD-style license
+// that can be found in the License file.
+//
+// Author: Shuo Chen (chenshuo at chenshuo dot com)
+
 #pragma once
 
 #include "StringPiece.h"
@@ -25,6 +32,7 @@ class GzipFile : noncopyable
     }
   }
 
+  // 右值引用 赋值构造函数
   GzipFile& operator=(GzipFile&& rhs) noexcept
   {
     swap(rhs);
@@ -33,7 +41,9 @@ class GzipFile : noncopyable
 
   bool valid() const { return file_ != NULL; }
   void swap(GzipFile& rhs) { std::swap(file_, rhs.file_); }
+
 #if ZLIB_VERNUM >= 0x1240
+  // 设置 缓冲区
   bool setBuffer(int size) { return ::gzbuffer(file_, size) == 0; }
 #endif
 

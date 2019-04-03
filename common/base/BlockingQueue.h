@@ -1,3 +1,10 @@
+// check 阻塞队列
+
+// Use of this source code is governed by a BSD-style license
+// that can be found in the License file.
+//
+// Author: Shuo Chen (chenshuo at chenshuo dot com)
+
 #ifndef WJ_BASE_BLOCKINGQUEUE_H
 #define WJ_BASE_BLOCKINGQUEUE_H
 
@@ -10,51 +17,59 @@
 namespace WJ
 {
 
-template <typename T>
-class BlockingQueue : noncopyable{
-  public:
-    BlockingQueue()
-        : mutex_(),
-          notEmpty_(mutex_),
-          queue_(){
-    }
+template<typename T>
+class BlockingQueue : noncopyable
+{
+ public:
+  BlockingQueue()
+    : mutex_(),
+      notEmpty_(mutex_),
+      queue_()
+  {
+  }
 
-    void put(const T &x){
-        MutexLockGuard lock(mutex_);
-        queue_.push_back(x);
-        notEmpty_.notify(); // wait morphing saves us
-    }
+  void put(const T& x)
+  {
+    MutexLockGuard lock(mutex_);
+    queue_.push_back(x);
+    notEmpty_.notify(); // wait morphing saves us
+    // http://www.domaigne.com/blog/computing/condvars-signal-with-mutex-locked-or-not/
+  }
 
-    void put(T &&x){
-        MutexLockGuard lock(mutex_);
-        queue_.push_back(std::move(x));
-        notEmpty_.notify();
-    }
+  void put(T&& x)
+  {
+    MutexLockGuard lock(mutex_);
+    queue_.push_back(std::move(x));
+    notEmpty_.notify();
+  }
 
-    T take(){
-        MutexLockGuard lock(mutex_);
-        // always use a while-loop, due to spurious wakeup
-        while (queue_.empty()){
-            notEmpty_.wait();
-        }
-        assert(!queue_.empty());
-        T front(std::move(queue_.front()));
-        queue_.pop_front();
-        return std::move(front);
+  T take()
+  {
+    MutexLockGuard lock(mutex_);
+    // always use a while-loop, due to spurious wakeup
+    while (queue_.empty())
+    {
+      notEmpty_.wait();
     }
+    assert(!queue_.empty());
+    T front(std::move(queue_.front()));
+    queue_.pop_front();
+    return std::move(front);
+  }
 
-    size_t size() const{
-        MutexLockGuard lock(mutex_);
-        return queue_.size();
-    }
+  size_t size() const
+  {
+    MutexLockGuard lock(mutex_);
+    return queue_.size();
+  }
 
-  private:
-    mutable MutexLock mutex_;
-    // GUARDED_BY 保证对变量的使用必须要先获得锁 mutex_
-    Condition notEmpty_ GUARDED_BY(mutex_);
-    std::deque<T> queue_ GUARDED_BY(mutex_);
+ private:
+  mutable MutexLock mutex_;
+  // GUARDED_BY 保证对变量的使用必须要先获得锁 mutex_
+  Condition         notEmpty_ GUARDED_BY(mutex_);
+  std::deque<T>     queue_ GUARDED_BY(mutex_);
 };
 
-} // namespace WJ
+}  // namespace WJ
 
-#endif // WJ_BASE_BLOCKINGQUEUE_H
+#endif  // WJ_BASE_BLOCKINGQUEUE_H

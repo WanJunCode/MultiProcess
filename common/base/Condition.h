@@ -1,8 +1,16 @@
+// check 环境变量
+
+// Use of this source code is governed by a BSD-style license
+// that can be found in the License file.
+//
+// Author: Shuo Chen (chenshuo at chenshuo dot com)
+
 #ifndef WJ_BASE_CONDITION_H
 #define WJ_BASE_CONDITION_H
 
-#include <pthread.h>
 #include "Mutex.h"
+
+#include <pthread.h>
 
 namespace WJ
 {
@@ -10,9 +18,9 @@ namespace WJ
 // condition 的使用 必须结合 mutex
 class Condition : noncopyable
 {
-public:
-  explicit Condition(MutexLock &mutex)
-      : mutex_(mutex)
+ public:
+  explicit Condition(MutexLock& mutex)
+    : mutex_(mutex)
   {
     MCHECK(pthread_cond_init(&pcond_, NULL));
   }
@@ -42,11 +50,11 @@ public:
     MCHECK(pthread_cond_broadcast(&pcond_));
   }
 
-private:
-  MutexLock &mutex_;
+ private:
+  MutexLock& mutex_;
   pthread_cond_t pcond_;
 };
 
-} // namespace WJ
+}  // namespace WJ
 
-#endif // WJ_BASE_CONDITION_H
+#endif  // WJ_BASE_CONDITION_H

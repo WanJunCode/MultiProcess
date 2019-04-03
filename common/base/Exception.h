@@ -1,15 +1,17 @@
+// check 异常类，获得栈痕迹
+
 // Use of this source code is governed by a BSD-style license
 // that can be found in the License file.
 //
 // Author: Shuo Chen (chenshuo at chenshuo dot com)
 
-#ifndef MUDUO_BASE_EXCEPTION_H
-#define MUDUO_BASE_EXCEPTION_H
+#ifndef WJ_BASE_EXCEPTION_H
+#define WJ_BASE_EXCEPTION_H
 
-#include "muduo/base/Types.h"
+#include "Types.h"
 #include <exception>
 
-namespace muduo
+namespace WJ
 {
 
 class Exception : public std::exception
@@ -35,6 +37,6 @@ class Exception : public std::exception
   string stack_;
 };
 
-}  // namespace muduo
+}  // namespace WJ
 
-#endif  // MUDUO_BASE_EXCEPTION_H
+#endif  // WJ_BASE_EXCEPTION_H

@@ -20,14 +20,14 @@
 // Enable thread safety attributes only with clang.
 // The attributes can be safely erased when compiling with other compilers.
 #if defined(__clang__) && (!defined(SWIG))
-#define THREAD_ANNOTATION_ATTRIBUTE__(x) __attribute__((x))
+#define THREAD_ANNOTATION_ATTRIBUTE__(x)   __attribute__((x))
 #else
-#define THREAD_ANNOTATION_ATTRIBUTE__(x) // no-op
+#define THREAD_ANNOTATION_ATTRIBUTE__(x)   // no-op
 #endif
 
 #define CAPABILITY(x) \
   THREAD_ANNOTATION_ATTRIBUTE__(capability(x))
-// __attribute__((capability(x)))
+  // __attribute__((capability(x)))
 
 #define SCOPED_CAPABILITY \
   THREAD_ANNOTATION_ATTRIBUTE__(scoped_lockable)
@@ -96,22 +96,23 @@
 // 检查线程返回值的安全属性
 #ifdef NDEBUG
 __BEGIN_DECLS
-extern void __assert_perror_fail(int errnum,
-                                 const char *file,
-                                 unsigned int line,
-                                 const char *function) noexcept __attribute__((__noreturn__));
+extern void __assert_perror_fail (int errnum,
+                                  const char *file,
+                                  unsigned int line,
+                                  const char *function)
+    noexcept __attribute__ ((__noreturn__));
 __END_DECLS
 #endif
 
 // __typeof__ (ret) 获得 ret 的类型
 #define MCHECK(ret) ({ __typeof__ (ret) errnum = (ret);         \
                        if (__builtin_expect(errnum != 0, 0))    \
-                         __assert_perror_fail (errnum, __FILE__, __LINE__, __func__); })
+                         __assert_perror_fail (errnum, __FILE__, __LINE__, __func__);})
 
-#else // CHECK_PTHREAD_RETURN_VALUE
+#else  // CHECK_PTHREAD_RETURN_VALUE
 
 #define MCHECK(ret) ({ __typeof__ (ret) errnum = (ret);         \
-                       assert(errnum == 0); (void) errnum; })
+                       assert(errnum == 0); (void) errnum;})
 
 #endif // CHECK_PTHREAD_RETURN_VALUE
 
@@ -135,9 +136,9 @@ namespace WJ
 
 class CAPABILITY("mutex") MutexLock : noncopyable
 {
-public:
+ public:
   MutexLock()
-      : holder_(0)
+    : holder_(0)
   {
     MCHECK(pthread_mutex_init(&mutex_, NULL));
   }
@@ -179,21 +180,21 @@ public:
   }
 
   // 获得
-  pthread_mutex_t *getPthreadMutex() /* non-const */
+  pthread_mutex_t* getPthreadMutex() /* non-const */
   {
     return &mutex_;
   }
 
-private:
+ private:
   friend class Condition;
 
   // 类中类，守护未被分配； 创建 UnassignGuard 传入 MutexLock 构造后，将 holder清除
   class UnassignGuard : noncopyable
   {
-  public:
+   public:
     // 引用，必须非nullptr
-    explicit UnassignGuard(MutexLock &owner)
-        : owner_(owner)
+    explicit UnassignGuard(MutexLock& owner)
+      : owner_(owner)
     {
       owner_.unassignHolder();
     }
@@ -203,8 +204,8 @@ private:
       owner_.assignHolder();
     }
 
-  private:
-    MutexLock &owner_;
+   private:
+    MutexLock& owner_;
   };
 
   void unassignHolder()
@@ -233,9 +234,9 @@ private:
 // mutex 资源管理类，上锁和解锁
 class SCOPED_CAPABILITY MutexLockGuard : noncopyable
 {
-public:
-  explicit MutexLockGuard(MutexLock &mutex) ACQUIRE(mutex)
-      : mutex_(mutex)
+ public:
+  explicit MutexLockGuard(MutexLock& mutex) ACQUIRE(mutex)
+    : mutex_(mutex)
   {
     mutex_.lock();
   }
@@ -245,15 +246,16 @@ public:
     mutex_.unlock();
   }
 
-private:
-  MutexLock &mutex_;
+ private:
+
+  MutexLock& mutex_;
 };
 
-} // namespace WJ
+}  // namespace WJ
 
 // Prevent misuse like:
 // MutexLockGuard(mutex_);
 // A tempory object doesn't hold the lock for long!
 #define MutexLockGuard(x) error "Missing guard object name"
 
-#endif // WJ_BASE_MUTEX_H
+#endif  // WJ_BASE_MUTEX_H

@@ -1,4 +1,4 @@
-// check
+// check 不可复制的基类
 
 #ifndef WJ_BASE_NONCOPYABLE_H
 #define WJ_BASE_NONCOPYABLE_H

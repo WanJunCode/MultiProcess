@@ -1,5 +1,7 @@
-#ifndef MUDUO_BASE_COPYABLE_H
-#define MUDUO_BASE_COPYABLE_H
+// check 可以复制的基类
+
+#ifndef WJ_BASE_COPYABLE_H
+#define WJ_BASE_COPYABLE_H
 
 namespace WJ
 {
@@ -16,4 +18,4 @@ class copyable
 
 }  // namespace WJ
 
-#endif  // MUDUO_BASE_COPYABLE_H
+#endif  // WJ_BASE_COPYABLE_H

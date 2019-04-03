@@ -3,7 +3,7 @@
 # Targets of the build
 #****************************************************************************
 OUTPUT := libbase.a
-
+CXX = clang++
 OUTPUT_INCLUDE := ../includes/base
 OUTPUT_LIBS    := ../libs
 
@@ -14,9 +14,9 @@ all: ${OUTPUT}
 # Source files
 #****************************************************************************
 #
-C_SRCS=$(shell find -iname "*.c")
+C_SRCS=$(shell find -maxdepth 1 -iname "*.c")
 #
-CXX_SRCS=$(shell find -iname "*.cpp")
+CXX_SRCS=$(shell find -maxdepth 1 -iname "*.cpp")
 
 OBJS=$(subst .c,.o,$(C_SRCS))
 OBJS+=$(subst .cpp,.o,$(CXX_SRCS))
@@ -24,10 +24,6 @@ OBJS+=$(subst .cpp,.o,$(CXX_SRCS))
 #****************************************************************************
 # Output
 #****************************************************************************
-
-# ${OBJS}:$(C_SRCS) $(CXX_SRCS)
-# 	${CXX} ${CXXFLAGS} $(C_SRCS) $(CXX_SRCS)
-
 ${OUTPUT}: ${OBJS}
 	${AR} rc $@ ${OBJS} ${LIBS} ${EXTRA_LIBS}
 #	${LD} -shared -fPIC -o $@ ${LDFLAGS} ${OBJS} ${LIBS} ${EXTRA_LIBS}
