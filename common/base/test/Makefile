@@ -1,4 +1,4 @@
-ALL_OBJS = AsyncLogging_test.out Atomic_unittest.out
+ALL_OBJS = AsyncLogging_test.out Atomic_unittest.out Timestamp_unittest.out
 
 all: ${ALL_OBJS}
 
@@ -12,6 +12,9 @@ AsyncLogging_test.out: AsyncLogging_test.cc
 	${GCC} ${CFLAGES} $^ -o $@ ${LIBS}
 
 Atomic_unittest.out: Atomic_unittest.cc
+	${GCC} ${CFLAGES} $^ -o $@ ${LIBS}
+
+Timestamp_unittest.out: Timestamp_unittest.cc
 	${GCC} ${CFLAGES} $^ -o $@ ${LIBS}
 
 .PHONY:clean
