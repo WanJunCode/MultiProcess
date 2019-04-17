@@ -15,8 +15,9 @@ LD     ?= clang++
 AR     ?= ar
 RANLIB ?= ranlib
 
+# DDEBUG 不能带有该表示
 DEBUG_CFLAGS     += -c -Wthread-safety -std=c++11 -ggdb -Wall -ffunction-sections -O0 -Wno-format \
--DDEBUG -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP_FIX_ERROR_COLLISION -DLOG4CPP
+ -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP_FIX_ERROR_COLLISION -DLOG4CPP
 RELEASE_CFLAGS   += -std=c++11 -ggdb -Wall -ffunction-sections -O3 -Wno-format \
 -Wno-unknown-pragmas -Wno-format -DMYSQLPP_MYSQL_HEADERS_BURIED -DHAVE_SCHED_GET_PRIORITY_MAX -DLOG4CPP
 
